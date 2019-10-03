@@ -37,17 +37,17 @@ jobs:
             - checkout
             - aws-cli/install
             - aws-cli/setup:
+                  profile-name: deployer
                   aws-access-key-id: AWS_ACCESS_KEY_ID
                   aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-                  profile-name: deployer
                   aws-region: AWS_REGION
             - run:
                 name: Deploy to EBS
                 command: |
                     zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
-                    aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-2-444397649125/sourcebundle.zip
-                    aws elasticbeanstalk create-application-version --application-name blue-green-deployments --version-label v1 --source-bundle S3Bucket="elasticbeanstalk-eu-west-2-444397649125",S3Key="sourcebundle.zip" --auto-create-application
-                    aws elasticbeanstalk create-environment --application-name blue-green-deployments --environment-name BlueGreenDeployments-blue --version-label v1 --solution-stack-name "PHP 7.2 running on 64bit Amazon Linux/2.8.15"
+                    aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-2-444397649125/sourcebundle.zip --profile deployer
+                    aws elasticbeanstalk create-application-version --application-name blue-green-deployments --version-label v1 --source-bundle S3Bucket="elasticbeanstalk-eu-west-2-444397649125",S3Key="sourcebundle.zip" --auto-create-application --profile deployer
+                    aws elasticbeanstalk create-environment --application-name blue-green-deployments --environment-name BlueGreenDeployments-blue --version-label v1 --solution-stack-name "PHP 7.2 running on 64bit Amazon Linux/2.8.15" --profile deployer
                     rm -rf ./sourcebundle.zip
 
 workflows:
