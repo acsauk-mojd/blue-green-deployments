@@ -2,11 +2,14 @@
 #
 # Check https://circleci.com/docs/2.0/language-php/ for more details
 #
-version: 2
+version: 2.1
+orbs:
+    aws-cli: circleci/aws-cli@0.1.16
+
 jobs:
     build:
         docker:
-            - image: circleci/php:7.3-node-browsers
+            - image: circleci/php:7.2-node-browsers
 
         steps:
             - checkout
@@ -29,14 +32,23 @@ jobs:
                       - ./vendor
 
     deploy:
-        docker:
-            -   image: buildpack-deps:trusty
+        executor: aws-cli/default
         steps:
             - checkout
+            - aws-cli/install
+            - aws-cli/setup:
+                  aws-access-key-id: AWS_ACCESS_KEY_ID
+                  aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+                  profile-name: deployer
+                  aws-region: AWS_REGION
             - run:
-                name: Deploy Master to Heroku
+                name: Deploy to EBS
                 command: |
-                    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+                    zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
+                    aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-2-444397649125/sourcebundle.zip
+                    aws elasticbeanstalk create-application-version --application-name blue-green-deployments --version-label v1 --source-bundle S3Bucket="elasticbeanstalk-eu-west-2-444397649125",S3Key="sourcebundle.zip" --auto-create-application
+                    aws elasticbeanstalk create-environment --application-name blue-green-deployments --environment-name BlueGreenDeployments-blue --version-label v1 --solution-stack-name "PHP 7.2 running on 64bit Amazon Linux/2.8.15"
+                    rm -rf ./sourcebundle.zip
 
 workflows:
     version: 2
