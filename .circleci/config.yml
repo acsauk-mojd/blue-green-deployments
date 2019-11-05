@@ -49,7 +49,7 @@ jobs:
                     current_version=$(echo $all_versions | jq '.ApplicationVersions[0].VersionLabel')
 
                     # Increment version number by 1 and export to $BASH_ENV
-                    echo "export VERSION=$(($current_version + 1))" >> $BASH_ENV
+                    echo "export VERSION=$(expr $current_version + 1)" >> $BASH_ENV
                     echo "export APPLICATION_NAME=$(echo $all_versions | jq '.ApplicationVersions[0].ApplicationName')" >> $BASH_ENV
                     source $BASH_ENV
 
@@ -63,10 +63,10 @@ jobs:
                     #Update either green or blue environment of app based on which is oldest
                     aws elasticbeanstalk update-environment --profile deployer --application-name $APPLICATION_NAME --environment-name $env_to_update --version-label $VERSION --solution-stack-name "64bit Amazon Linux 2018.03 v2.8.15 running PHP 7.2"
 
-                    #Swap CNAMES
-                    source_env_name=$(aws elasticbeanstalk describe-environments --profile deployer | jq '.Environments | sort_by(.DateUpdated)[0].EnvironmentName')
-                    destination_env_name=$([ "$env_to_update" = "BlueGreenDeployments-blue" ] && echo "BlueGreenDeployments-green" || echo "BlueGreenDeployments-blue")
-                    aws elastibeanstalk swap-environment-cnames --profile deployer --source-environment-name source_env_name --destination-environment-name destination_env_name
+                    #Swap CNAMES - look at which env should be which
+                    oldest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq '.Environments | sort_by(.DateUpdated) | .[0]')
+                    newest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq '.Environments | sort_by(.DateUpdated) | .[-1]')
+                    aws elastibeanstalk swap-environment-cnames --profile deployer --source-environment-name oldest_updated_env --destination-environment-name newest_updated_env
 
                     #Cleanup
                     rm -rf ./sourcebundle.zip
