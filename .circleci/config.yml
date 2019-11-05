@@ -49,7 +49,7 @@ jobs:
                     current_version=$(echo $all_versions | jq '.ApplicationVersions[0].VersionLabel')
 
                     # Increment version number by 1 and export to $BASH_ENV
-                    echo "export VERSION=$(($current_version + 1))" >> $BASH_ENV
+                    echo "export VERSION=$((current_version + 1))" >> $BASH_ENV
                     echo "export APPLICATION_NAME=$(echo $all_versions | jq '.ApplicationVersions[0].ApplicationName')" >> $BASH_ENV
                     source $BASH_ENV
 
