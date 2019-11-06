@@ -46,7 +46,8 @@ jobs:
                 command: |
                     # Get current version of latest env from ebs
                     all_versions=$(aws elasticbeanstalk describe-application-versions --profile deployer)
-                    typeset -i current_version=$(echo $all_versions | jq '.ApplicationVersions[0].VersionLabel')
+                    typeset -i current_version
+                    current_version=$(echo $all_versions | jq '.ApplicationVersions[0].VersionLabel')
 
                     # Increment version number by 1 and export to $BASH_ENV
                     # echo "export VERSION=$((current_version + 1))" >> $BASH_ENV
