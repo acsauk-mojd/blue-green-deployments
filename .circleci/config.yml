@@ -50,7 +50,7 @@ jobs:
 
                     # Increment version number by 1 and export to $BASH_ENV
                     # echo "export VERSION=$((current_version + 1))" >> $BASH_ENV
-                    version=$((current_version+1))
+                    let version=current_version+1
                     echo "export APPLICATION_NAME=$(echo $all_versions | jq '.ApplicationVersions[0].ApplicationName')" >> $BASH_ENV
                     source $BASH_ENV
 
