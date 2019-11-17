@@ -60,9 +60,9 @@ jobs:
                     aws elasticbeanstalk create-application-version --profile deployer --application-name $APPLICATION_NAME --version-label $NEXT_VERSION --source-bundle S3Bucket="elasticbeanstalk-eu-west-1-444397649125",S3Key="sourcebundle.zip" --auto-create-application
 
                     export ENVIRONMENTS=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME)
-                    export OLDEST_UPDATED_ENV=$($ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
-                    export NEWEST_UPDATED_ENV=$($ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
-                    export SOLUTION_STACK_NAME=$($ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].SolutionStackName')
+                    export OLDEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
+                    export NEWEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
+                    export SOLUTION_STACK_NAME=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].SolutionStackName')
 
                     #Update either green or blue environment of app based on which is oldest
                     aws elasticbeanstalk update-environment --profile deployer --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV --version-label $CURRENT_VERSION --solution-stack-name $SOLUTION_STACK_NAME
