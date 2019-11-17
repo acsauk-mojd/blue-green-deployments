@@ -57,7 +57,7 @@ jobs:
                     aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-2-444397649125/sourcebundle.zip --profile deployer
 
                     #Create new version of App using zip in S3
-                    aws elasticbeanstalk create-application-version --profile deployer --application-name $APPLICATION_NAME --version-label $NEXT_VERSION --source-bundle S3Bucket="elasticbeanstalk-eu-west-2-444397649125",S3Key="sourcebundle.zip" --auto-create-application
+                    aws elasticbeanstalk create-application-version --profile deployer --application-name $APPLICATION_NAME --version-label $NEXT_VERSION --source-bundle S3Bucket="elasticbeanstalk-eu-west-1-444397649125",S3Key="sourcebundle.zip" --auto-create-application
 
                     export OLDEST_UPDATED_ENV=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
                     export NEWEST_UPDATED_ENV=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
