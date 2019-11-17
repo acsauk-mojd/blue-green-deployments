@@ -52,10 +52,9 @@ jobs:
                     echo "export VERSION=$((current_version + 1))" >> $BASH_ENV
                     let version=current_version+1
                     echo "export APPLICATION_NAME=$(echo $all_versions | jq -r '.ApplicationVersions[0].ApplicationName')" >> $BASH_ENV
+                    echo "export oldest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')" >> $BASH_ENV
+                    echo "export newest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')" >> $BASH_ENV
                     source $BASH_ENV
-
-                    oldest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq -r '.Environments | sort_by(.DateUpdated) | .[0]')
-                    newest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq -r '.Environments | sort_by(.DateUpdated) | .[-1]')
 
                     #Zip project files excluding vendor and copy to ebs S3 bucket
                     zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
