@@ -69,7 +69,7 @@ jobs:
 
                     function getStatus() {
                     echo `aws elasticbeanstalk describe-environments \
-                        --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV |\
+                        --profile deployer --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV |\
                         jq -r '.Environments | .[]?' | jq -r '.Status'`
                     }
 
