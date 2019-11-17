@@ -94,7 +94,10 @@ jobs:
                   command: |
                       #Swap CNAMES - look at which env should be which
 
+                      export APPLICATION_NAME=$(aws elasticbeanstalk describe-application-versions --profile deployer | jq -r '.ApplicationVersions[0].ApplicationName')
+
                       export ENVIRONMENTS=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME)
+                      export APPLICATION_NAME=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].ApplicationName')
                       export OLDEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
                       export NEWEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
 
