@@ -54,7 +54,7 @@ jobs:
 
                     #Zip project files excluding vendor and copy to ebs S3 bucket
                     zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
-                    aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-2-444397649125/sourcebundle.zip --profile deployer
+                    aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-1-444397649125/sourcebundle.zip --profile deployer
 
                     #Create new version of App using zip in S3
                     aws elasticbeanstalk create-application-version --profile deployer --application-name $APPLICATION_NAME --version-label $NEXT_VERSION --source-bundle S3Bucket="elasticbeanstalk-eu-west-1-444397649125",S3Key="sourcebundle.zip" --auto-create-application
