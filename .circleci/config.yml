@@ -68,7 +68,7 @@ jobs:
                     aws elasticbeanstalk update-environment --profile deployer --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV --version-label $CURRENT_VERSION --solution-stack-name "$SOLUTION_STACK_NAME"
 
                     #Swap CNAMES - look at which env should be which
-                    aws elastibeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
+                    aws elasticbeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
 
                     #Cleanup
                     rm -rf ./sourcebundle.zip
