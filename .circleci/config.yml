@@ -51,8 +51,6 @@ jobs:
                     # Increment version number by 1
                     export NEXT_VERSION=$(($CURRENT_VERSION + 1))
                     export APPLICATION_NAME=$(echo $ALL_VERSIONS | jq -r '.ApplicationVersions[0].ApplicationName')
-                    export OLDEST_UPDATED_ENV=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
-                    export NEWEST_UPDATED_ENV=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
 
                     #Zip project files excluding vendor and copy to ebs S3 bucket
                     zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
@@ -60,6 +58,9 @@ jobs:
 
                     #Create new version of App using zip in S3
                     aws elasticbeanstalk create-application-version --profile deployer --application-name $APPLICATION_NAME --version-label $NEXT_VERSION --source-bundle S3Bucket="elasticbeanstalk-eu-west-2-444397649125",S3Key="sourcebundle.zip" --auto-create-application
+
+                    export OLDEST_UPDATED_ENV=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
+                    export NEWEST_UPDATED_ENV=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
 
                     #Update either green or blue environment of app based on which is oldest
                     aws elasticbeanstalk update-environment --profile deployer --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV --version-label $CURRENT_VERSION --solution-stack-name "64bit Amazon Linux 2018.03 v2.8.15 running PHP 7.2"
