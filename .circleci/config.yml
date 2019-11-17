@@ -67,6 +67,26 @@ jobs:
                     #Update either green or blue environment of app based on which is oldest
                     aws elasticbeanstalk update-environment --profile deployer --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV --version-label $CURRENT_VERSION --solution-stack-name "$SOLUTION_STACK_NAME"
 
+                    function getStatus() {
+                    echo `aws elasticbeanstalk describe-environments \
+                        --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV |\
+                        jq -r '.Environments | .[]?' | jq -r '.Status'`
+                    }
+
+                    sleep_time_seconds=5
+                    max_iterations_count=$((120/$sleep_time_seconds))
+                    iterations=0
+
+                    echo "Waiting for a maximum of $timeout_seconds seconds for $OLDEST_UPDATED_ENV to become ready"
+
+                    status=$(getStatus)
+                    while [[ ( $status != "Ready" ) && ( $iterations -lt $max_iterations_count ) ]]; do
+                        status=$(getStatus)
+                        echo $status
+                        sleep $sleep_time_seconds
+                        ((iterations+=1))
+                    done
+
                     #Swap CNAMES - look at which env should be which
                     aws elasticbeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
 
