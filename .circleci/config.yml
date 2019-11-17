@@ -93,6 +93,11 @@ jobs:
                   name: Swap Cnames
                   command: |
                       #Swap CNAMES - look at which env should be which
+
+                      export ENVIRONMENTS=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME)
+                      export OLDEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
+                      export NEWEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
+
                       aws elasticbeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
 workflows:
     version: 2
