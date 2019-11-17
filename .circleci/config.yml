@@ -45,16 +45,14 @@ jobs:
                 name: Deploy to EBS
                 command: |
                     # Get current version of latest env from ebs
-                    all_versions=$(aws elasticbeanstalk describe-application-versions --profile deployer)
-                    current_version=$(echo $all_versions | jq -r '.ApplicationVersions[0].VersionLabel')
+                    export ALL_VERSIONS=$(aws elasticbeanstalk describe-application-versions --profile deployer)
+                    export CURRENT_VERSION=$(echo $ALL_VERSIONS | jq -r '.ApplicationVersions[0].VersionLabel')
 
-                    # Increment version number by 1 and export to $BASH_ENV
-                    echo "export VERSION=$((current_version + 1))" >> $BASH_ENV
-                    let version=current_version+1
-                    echo "export APPLICATION_NAME=$(echo $all_versions | jq -r '.ApplicationVersions[0].ApplicationName')" >> $BASH_ENV
-                    echo "export oldest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')" >> $BASH_ENV
-                    echo "export newest_updated_env=$(aws elasticbeanstalk describe-environments --profile deployer --application-name BlueGreen | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')" >> $BASH_ENV
-                    source $BASH_ENV
+                    # Increment version number by 1
+                    export NEXT_VERSION=$(($CURRENT_VERSION + 1))
+                    export APPLICATION_NAME=$(echo $ALL_VERSIONS | jq -r '.ApplicationVersions[0].ApplicationName')
+                    export OLDEST_UPDATED_NAME=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
+                    export NEWEST_UPDATED_NAME=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
 
                     #Zip project files excluding vendor and copy to ebs S3 bucket
                     zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
