@@ -56,6 +56,9 @@ jobs:
                     zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
                     aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-1-444397649125/sourcebundle.zip --profile deployer
 
+                    #Cleanup
+                    rm -rf ./sourcebundle.zip
+
                     #Create new version of App using zip in S3
                     aws elasticbeanstalk create-application-version --profile deployer --application-name $APPLICATION_NAME --version-label $NEXT_VERSION --source-bundle S3Bucket="elasticbeanstalk-eu-west-1-444397649125",S3Key="sourcebundle.zip" --auto-create-application
 
@@ -77,7 +80,7 @@ jobs:
                     max_iterations_count=$((120/$sleep_time_seconds))
                     iterations=0
 
-                    echo "Waiting for a maximum of $timeout_seconds seconds for $OLDEST_UPDATED_ENV to become ready"
+                    echo "Waiting for a maximum of 120 seconds for $OLDEST_UPDATED_ENV to become ready"
 
                     status=$(getStatus)
                     while [[ ( $status != "Ready" ) && ( $iterations -lt $max_iterations_count ) ]]; do
@@ -86,13 +89,11 @@ jobs:
                         sleep $sleep_time_seconds
                         ((iterations+=1))
                     done
-
-                    #Swap CNAMES - look at which env should be which
-                    aws elasticbeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
-
-                    #Cleanup
-                    rm -rf ./sourcebundle.zip
-
+            - run:
+                  name: Swap Cnames
+                  command: |
+                      #Swap CNAMES - look at which env should be which
+                      aws elasticbeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
 workflows:
     version: 2
     build-deploy:
