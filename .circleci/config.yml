@@ -63,7 +63,7 @@ jobs:
                     export NEWEST_UPDATED_ENV=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
 
                     #Update either green or blue environment of app based on which is oldest
-                    aws elasticbeanstalk update-environment --profile deployer --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV --version-label $CURRENT_VERSION --solution-stack-name "64bit Amazon Linux 2018.03 v2.8.15 running PHP 7.2"
+                    aws elasticbeanstalk update-environment --profile deployer --application-name $APPLICATION_NAME --environment-name $OLDEST_UPDATED_ENV --version-label $CURRENT_VERSION --solution-stack-name "64bit Amazon Linux 2018.03 v2.8.15 running PHP 7.3"
 
                     #Swap CNAMES - look at which env should be which
                     aws elastibeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
