@@ -30,6 +30,10 @@ jobs:
                   key: v1-dependencies-{{ checksum "composer.lock" }}
                   paths:
                       - ./vendor
+            - run:
+                  name: Unit Test
+                  command: |
+                      php bin/phpunit --group smoke
 
     deploy:
         executor: aws-cli/default
