@@ -93,44 +93,30 @@ jobs:
                         sleep $sleep_time_seconds
                         ((iterations+=1))
                     done
-#            - run:
-#                name: Test on new env
-#                steps:
-#                    - checkout
-#                    - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
-#                    - run: sudo docker-php-ext-install zip
-#
-#                    # Download and cache dependencies
-#                    - restore_cache:
-#                          keys:
-#                              # "composer.lock" can be used if it is committed to the repo
-#                              - v1-dependencies-{{ checksum "composer.lock" }}
-#                              # fallback to using the latest cache if no exact match is found
-#                              - v1-dependencies-
-#
-#                    - run: composer install -n --prefer-dist
-#
-#                    - save_cache:
-#                          key: v1-dependencies-{{ checksum "composer.lock" }}
-#                          paths:
-#                              - ./vendor
-#                    - run:
-#                          name: Unit Test
-#                          command: |
-#                              php bin/phpunit --group smoke
+
+                    sudo apt install python-pip python-dev
+                    sudo pip install awsebcli==3.14.11
+
+                    eb ssh $OLDEST_UPDATED_ENV --command "php bin/phpunit --group smoke"
+
             - run:
-                  name: Swap Cnames
+                  name: Install aws eb cli
                   command: |
-                      #Swap CNAMES - look at which env should be which
 
-                      export APPLICATION_NAME=$(aws elasticbeanstalk describe-application-versions --profile deployer | jq -r '.ApplicationVersions[0].ApplicationName')
 
-                      export ENVIRONMENTS=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME)
-                      export APPLICATION_NAME=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].ApplicationName')
-                      export OLDEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
-                      export NEWEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
+                - run:
+                      name: Swap Cnames
+                      command: |
+                          #Swap CNAMES - look at which env should be which
 
-                      aws elasticbeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
+                          export APPLICATION_NAME=$(aws elasticbeanstalk describe-application-versions --profile deployer | jq -r '.ApplicationVersions[0].ApplicationName')
+
+                          export ENVIRONMENTS=$(aws elasticbeanstalk describe-environments --profile deployer --application-name $APPLICATION_NAME)
+                          export APPLICATION_NAME=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].ApplicationName')
+                          export OLDEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EnvironmentName')
+                          export NEWEST_UPDATED_ENV=$(echo $ENVIRONMENTS | jq -r '.Environments | sort_by(.DateUpdated) | .[-1].EnvironmentName')
+
+                          aws elasticbeanstalk swap-environment-cnames --profile deployer --source-environment-name $OLDEST_UPDATED_ENV --destination-environment-name $NEWEST_UPDATED_ENV
 workflows:
     version: 2
     build-deploy:
