@@ -98,12 +98,6 @@ jobs:
                     sudo pip install awsebcli==3.14.11
 
                     eb ssh $OLDEST_UPDATED_ENV --command "php bin/phpunit --group smoke"
-
-            - run:
-                  name: Install aws eb cli
-                  command: |
-
-
                 - run:
                       name: Swap Cnames
                       command: |
