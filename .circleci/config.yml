@@ -97,7 +97,7 @@ jobs:
                     sudo apt install python-pip python-dev
                     sudo pip install awsebcli==3.14.11
 
-                    eb ssh $OLDEST_UPDATED_ENV --command "php bin/phpunit --group smoke"
+                    eb ssh $OLDEST_UPDATED_ENV --region AWS_REGION --profile deployer --command "php bin/phpunit --group smoke"
             - run:
                   name: Swap Cnames
                   command: |
