@@ -117,7 +117,13 @@ jobs:
                  command: |
                      export TEST_BASE_URL=$(aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated) | .[0].CNAME')
 
-                     BEHAT_PARAMS="{\"extensions\": {\"Behat\\\\MinkExtension\\\\ServiceContainer\\\\MinkExtension\": {\"base_url\": \"$TEST_BASE_URL\"}}}"  vendor/bin/behat
+                     echo $TEST_BASE_URL
+
+                     export BEHAT_PARAMS="{\"extensions\": {\"Behat\\\\MinkExtension\\\\ServiceContainer\\\\MinkExtension\": {\"base_url\": \"$TEST_BASE_URL\"}}}"
+
+                     echo $BEHAT_PARAMS
+
+                     vendor/bin/behat
 
             - run:
                   name: Swap Cnames
