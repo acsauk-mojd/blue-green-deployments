@@ -37,6 +37,8 @@ jobs:
 
     deploy:
         executor: aws-cli/default
+        docker:
+            - image: circleci/php:7.3-node-browsers
         steps:
             - checkout
             - aws-cli/install
@@ -94,9 +96,29 @@ jobs:
                         ((iterations+=1))
                     done
 
+            - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
+            - run: sudo docker-php-ext-install zip
+
+            - restore_cache:
+                 keys:
+                     # "composer.lock" can be used if it is committed to the repo
+                     - v1-dependencies-{{ checksum "composer.lock" }}
+                     # fallback to using the latest cache if no exact match is found
+                     - v1-dependencies-
+
+            - run: composer install -n --prefer-dist
+
+            - save_cache:
+                 key: v1-dependencies-{{ checksum "composer.lock" }}
+                 paths:
+                     - ./vendor
+            - run:
+                 name: Smoke tests
+                 command: |
                      export TEST_BASE_URL=$(aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated) | .[0].CNAME')
 
-                    BEHAT_PARAMS="{\"extensions\": {\"Behat\\\\MinkExtension\\\\ServiceContainer\\\\MinkExtension\": {\"base_url\": \"$TEST_BASE_URL\"}}}"  vendor/bin/behat
+                     BEHAT_PARAMS="{\"extensions\": {\"Behat\\\\MinkExtension\\\\ServiceContainer\\\\MinkExtension\": {\"base_url\": \"$TEST_BASE_URL\"}}}"  vendor/bin/behat
+
             - run:
                   name: Swap Cnames
                   command: |
