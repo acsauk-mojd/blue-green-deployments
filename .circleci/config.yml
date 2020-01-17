@@ -59,7 +59,8 @@ jobs:
                     export APPLICATION_NAME=$(echo $ALL_VERSIONS | jq -r '.ApplicationVersions[0].ApplicationName')
 
                     #Zip project files excluding vendor and copy to ebs S3 bucket
-                    zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
+                    git archive -v -o ./sourcebundle.zip --format=zip HEAD
+#                    zip ./sourcebundle.zip -r * .[^.]* -x "vendor/*"
                     aws s3 cp sourcebundle.zip s3://elasticbeanstalk-eu-west-1-444397649125/sourcebundle.zip --profile deployer
 
                     #Cleanup
