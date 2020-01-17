@@ -5,6 +5,9 @@
         "php": "^7.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "behat/mink-extension": "^2.3",
+        "behat/mink-goutte-driver": "^1.2",
+        "behat/symfony2-extension": "^2.1",
         "doctrine/annotations": "^1.7",
         "eightpoints/guzzle-bundle": "^7.6",
         "guzzlehttp/guzzle": "^6.4",
@@ -20,6 +23,8 @@
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {
+        "behat/mink": "dev-master",
+        "behatch/contexts": "3.0.1",
         "symfony/phpunit-bridge": "^5.0"
     },
     "config": {

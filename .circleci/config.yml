@@ -94,10 +94,9 @@ jobs:
                         ((iterations+=1))
                     done
 
-                    sudo apt install python-pip python-dev
-                    sudo pip install awsebcli==3.14.11
+                     export TEST_BASE_URL=$(aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated) | .[0].CNAME')
 
-                    eb ssh $OLDEST_UPDATED_ENV --region $AWS_REGION --profile deployer --command "php bin/phpunit --group smoke"
+                    BEHAT_PARAMS="{\"extensions\": {\"Behat\\\\MinkExtension\\\\ServiceContainer\\\\MinkExtension\": {\"base_url\": \"$TEST_BASE_URL\"}}}"  vendor/bin/behat
             - run:
                   name: Swap Cnames
                   command: |
