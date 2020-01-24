@@ -104,7 +104,9 @@ jobs:
             - run:
                  name: Smoke tests
                  command: |
-                     export TEST_BASE_URL=$(aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EndpointURL')
+                     echo aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated)
+
+                     export TEST_BASE_URL=$(aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated) | .[0].CNAME')
 
                      echo $TEST_BASE_URL
 
