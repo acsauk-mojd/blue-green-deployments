@@ -104,13 +104,11 @@ jobs:
             - run:
                  name: Smoke tests
                  command: |
-                     echo aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated)
-
-                     export TEST_BASE_URL=$(aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated) | .[0].CNAME')
+                     export TEST_BASE_URL=$(aws elasticbeanstalk describe-environments --profile deployer --environment-names $OLDEST_UPDATED_ENV | jq -r '.Environments | sort_by(.DateUpdated) | .[0].EndpointURL')
 
                      echo $TEST_BASE_URL
 
-                     export BEHAT_PARAMS="{\"extensions\": {\"Behat\\\\MinkExtension\\\\ServiceContainer\\\\MinkExtension\": {\"base_url\": \"https://$TEST_BASE_URL\"}}}"
+                     export BEHAT_PARAMS="{\"extensions\": {\"Behat\\\\MinkExtension\\\\ServiceContainer\\\\MinkExtension\": {\"base_url\": \"http://$TEST_BASE_URL\"}}}"
 
                      echo $BEHAT_PARAMS
 
