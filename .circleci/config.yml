@@ -112,7 +112,7 @@ jobs:
 
                      echo $BEHAT_PARAMS
 
-                     $BEHAT_PARAMS vendor/bin/behat
+                     vendor/bin/behat
 
             - run:
                   name: Swap Cnames
