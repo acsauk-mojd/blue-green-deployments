@@ -5,6 +5,7 @@
 version: 2.1
 orbs:
     aws-cli: circleci/aws-cli@0.1.16
+    coveralls: coveralls/coveralls@1.0.4
 
 jobs:
     build:
@@ -15,6 +16,8 @@ jobs:
             - checkout
             - run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
             - run: sudo docker-php-ext-install zip
+            - run: pecl install pcov
+            - run: docker-php-ext-enable pcov
 
             # Download and cache dependencies
             - restore_cache:
@@ -33,7 +36,9 @@ jobs:
             - run:
                   name: Unit Test
                   command: |
-                      php bin/phpunit --group smoke
+                      php bin/phpunit -c ./phpunit.xml.dist --group smoke --coverage-php tests/coverage/totalCoverage.cov
+
+            - coveralls/upload
 
     deploy:
         executor: aws-cli/default

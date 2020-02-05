@@ -11,4 +11,7 @@ RUN apt-get install -y zlib1g-dev libpq-dev git libicu-dev libxml2-dev \
 
 RUN curl --insecure https://getcomposer.org/composer.phar -o /usr/bin/composer && chmod +x /usr/bin/composer
 
+RUN pecl install pcov
+RUN docker-php-ext-enable pcov
+
 WORKDIR /var/www/symfony

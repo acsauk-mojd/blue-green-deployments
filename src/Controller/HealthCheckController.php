@@ -32,4 +32,16 @@ class HealthCheckController extends AbstractController
     {
         return $this->googleService->ping();
     }
+
+    /**
+     * @Route("/fake", methods={"GET","HEAD"})
+     */
+    public function fakeEndpoint()
+    {
+        if ((rand(1,2) === 2)) {
+            return new Response();
+        } else {
+            return new Response('FORBIDDEN', Response::HTTP_FORBIDDEN);
+        }
+    }
 }

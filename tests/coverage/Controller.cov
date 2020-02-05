@@ -1,0 +1,161 @@
+<?php
+$coverage = new SebastianBergmann\CodeCoverage\CodeCoverage;
+$coverage->setData(array (
+  '/var/www/symfony/src/Client/GoogleClient.php' => 
+  array (
+    18 => 
+    array (
+    ),
+    19 => 
+    array (
+    ),
+    26 => 
+    array (
+    ),
+  ),
+  '/var/www/symfony/src/Controller/AnimalController.php' => 
+  array (
+    15 => 
+    array (
+    ),
+    16 => 
+    array (
+    ),
+  ),
+  '/var/www/symfony/src/Controller/HealthCheckController.php' => 
+  array (
+    25 => 
+    array (
+      0 => 'Tests\\HealthCheckTest::healthCheck_healthy',
+      1 => 'Tests\\HealthCheckTest::healthCheck_unhealthy',
+    ),
+    26 => 
+    array (
+      0 => 'Tests\\HealthCheckTest::healthCheck_healthy',
+      1 => 'Tests\\HealthCheckTest::healthCheck_unhealthy',
+    ),
+    33 => 
+    array (
+      0 => 'Tests\\HealthCheckTest::healthCheck_healthy',
+      1 => 'Tests\\HealthCheckTest::healthCheck_unhealthy',
+    ),
+    41 => 
+    array (
+    ),
+    42 => 
+    array (
+    ),
+    44 => 
+    array (
+    ),
+  ),
+  '/var/www/symfony/src/Kernel.php' => 
+  array (
+    20 => 
+    array (
+    ),
+    21 => 
+    array (
+    ),
+    22 => 
+    array (
+    ),
+    23 => 
+    array (
+    ),
+    26 => 
+    array (
+    ),
+    30 => 
+    array (
+    ),
+    35 => 
+    array (
+    ),
+    36 => 
+    array (
+    ),
+    37 => 
+    array (
+    ),
+    39 => 
+    array (
+    ),
+    40 => 
+    array (
+    ),
+    41 => 
+    array (
+    ),
+    42 => 
+    array (
+    ),
+    43 => 
+    array (
+    ),
+    47 => 
+    array (
+    ),
+    49 => 
+    array (
+    ),
+    50 => 
+    array (
+    ),
+    51 => 
+    array (
+    ),
+    52 => 
+    array (
+    ),
+  ),
+  '/var/www/symfony/src/Service/GoogleService.php' => 
+  array (
+    19 => 
+    array (
+    ),
+    20 => 
+    array (
+    ),
+    24 => 
+    array (
+    ),
+    26 => 
+    array (
+    ),
+    27 => 
+    array (
+    ),
+    30 => 
+    array (
+    ),
+  ),
+));
+$coverage->setTests(array (
+  'UNCOVERED_FILES_FROM_WHITELIST' => 
+  array (
+    'size' => 'unknown',
+    'status' => -1,
+  ),
+  'Tests\\HealthCheckTest::healthCheck_healthy' => 
+  array (
+    'size' => 'unknown',
+    'status' => 0,
+  ),
+  'Tests\\HealthCheckTest::healthCheck_unhealthy' => 
+  array (
+    'size' => 'unknown',
+    'status' => 0,
+  ),
+));
+
+$filter = $coverage->filter();
+$filter->setWhitelistedFiles(array (
+  '/var/www/symfony/src/Client/GoogleClient.php' => true,
+  '/var/www/symfony/src/Controller/AnimalController.php' => true,
+  '/var/www/symfony/src/Controller/HealthCheckController.php' => true,
+  '/var/www/symfony/src/Kernel.php' => true,
+  '/var/www/symfony/src/Service/GoogleService.php' => true,
+));
+
+return $coverage;

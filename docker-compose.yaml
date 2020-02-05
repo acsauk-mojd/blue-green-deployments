@@ -34,7 +34,7 @@ services:
     volumes:
       - ./logs/nginx/:/var/logs/nginx:cached
 
-  test:
-    build: .
-    ports:
-      - '9002:9000'
+#  test:
+#    build: .
+#    ports:
+#      - '9002:9000'
