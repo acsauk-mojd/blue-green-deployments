@@ -38,7 +38,8 @@ jobs:
                   command: |
                       php bin/phpunit -c ./phpunit.xml.dist --group smoke --coverage-php tests/coverage/totalCoverage.cov
 
-            - coveralls/upload
+            - coveralls/upload:
+                path_to_lcov: tests/coverage/totalCoverage.cov
 
     deploy:
         executor: aws-cli/default
