@@ -17,4 +17,15 @@ class AnimalController extends AbstractController
             'path' => 'src/Controller/AnimalController.php',
         ]);
     }
+
+    /**
+     * @Route("/jungle", name="animal")
+     */
+    public function jungle()
+    {
+        return $this->json([
+            'message' => 'Welcome to your new controller!!',
+            'path' => 'src/Controller/AnimalController.php',
+        ]);
+    }
 }
