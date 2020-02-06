@@ -20,11 +20,11 @@ jobs:
 
             # Download and cache dependencies
             - restore_cache:
-                  keys:
-                      # "composer.lock" can be used if it is committed to the repo
-                      - v1-dependencies-{{ checksum "composer.lock" }}
-                      # fallback to using the latest cache if no exact match is found
-                      - v1-dependencies-
+                keys:
+                    # "composer.lock" can be used if it is committed to the repo
+                    - v1-dependencies-{{ checksum "composer.lock" }}
+                    # fallback to using the latest cache if no exact match is found
+                    - v1-dependencies-
 
             - run: composer install -n --prefer-dist
 
@@ -37,7 +37,7 @@ jobs:
                   command: |
                       php bin/phpunit -c ./phpunit.xml.dist --group smoke
 
-            coveralls_upload:
+            - coveralls_upload:
                 executor: php
                 steps:
                     - checkout
