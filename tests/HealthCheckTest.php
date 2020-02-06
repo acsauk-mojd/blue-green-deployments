@@ -5,6 +5,7 @@ namespace Tests;
 use App\Controller\HealthCheckController;
 use App\Service\GoogleService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class HealthCheckTest extends WebTestCase {
@@ -33,5 +34,16 @@ class HealthCheckTest extends WebTestCase {
 
         $sut = new HealthCheckController($googleService->reveal());
         self::assertEquals(new Response('unavailable', Response::HTTP_BAD_GATEWAY), $sut->availability());
+    }
+
+    /**
+     * @test
+     * @group smoke
+     */
+    public function superFake()
+    {
+        $client = self::createClient();
+        $response = $client->request(Request::METHOD_GET, '/superFake');
+        self::assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
     }
 }
