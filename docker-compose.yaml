@@ -1,0 +1,40 @@
+version: '2'
+services:
+  postgres:
+    image: postgres
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_PASSWORD: password123
+      POSTGRES_USER: root
+
+  php:
+    build: ./docker/php-fpm
+    environment:
+      - FLAG_EMAIL_ENABLED=0
+    ports:
+      - '9002:9000'
+    volumes:
+      - ./:/var/www/symfony:cached
+      - ./logs/symfony:/var/www/symfony/var/logs:cached
+    links:
+      - postgres
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      args:
+        - nginx_host=${NGINX_HOST}
+    ports:
+      - '1204:80'
+    links:
+      - php
+    volumes_from:
+      - php
+    volumes:
+      - ./logs/nginx/:/var/logs/nginx:cached
+
+#  test:
+#    build: .
+#    ports:
+#      - '9002:9000'
