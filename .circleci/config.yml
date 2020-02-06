@@ -43,11 +43,17 @@ jobs:
                       wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.2.0/php-coveralls.phar
                       chmod +x php-coveralls.phar
             - run:
-                  name: Upload report
+                  name: Upload report - Coveralls
                   command: |
                       ./php-coveralls.phar -v \
                           --json_path tests/coverage/coveralls-upload.json \
                           --coverage_clover tests/coverage/coverage.xml \
+
+            - run:
+                  name: Upload report - Codecov
+                  command: |
+                      bash <(curl -s https://codecov.io/bash)
+
 
     deploy:
         executor: aws-cli/default
