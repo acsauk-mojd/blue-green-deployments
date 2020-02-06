@@ -29,14 +29,14 @@ class AnimalController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/forest", name="forest")
-     */
-    public function forest()
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/AnimalController.php',
-        ]);
-    }
+//    /**
+//     * @Route("/forest", name="forest")
+//     */
+//    public function forest()
+//    {
+//        return $this->json([
+//            'message' => 'Welcome to your new controller!',
+//            'path' => 'src/Controller/AnimalController.php',
+//        ]);
+//    }
 }
