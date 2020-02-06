@@ -44,16 +44,4 @@ class HealthCheckController extends AbstractController
             return new Response('FORBIDDEN', Response::HTTP_FORBIDDEN);
         }
     }
-
-    /**
-     * @Route("/superFake", methods={"GET","HEAD"})
-     */
-    public function superFakeEndpoint()
-    {
-        if ((rand(1,2) === 2)) {
-            return new Response();
-        } else {
-            return new Response('FORBIDDEN', Response::HTTP_FORBIDDEN);
-        }
-    }
 }
