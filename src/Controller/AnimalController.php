@@ -35,7 +35,7 @@ class AnimalController extends AbstractController
     public function forest()
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
+            'message' => 'Welcome to your new controller!!',
             'path' => 'src/Controller/AnimalController.php',
         ]);
     }
